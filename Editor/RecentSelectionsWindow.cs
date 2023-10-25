@@ -230,7 +230,7 @@ namespace SpellSinger.BookmarksAndSelections
         }
     
     
-        [MenuItem("Tools/Recent Selections")]
+        [MenuItem("Window/SpellSinger/Recent Selections")]
         private static void ShowWindow()
         {
             var window = GetWindow<RecentSelectionsWindow>();

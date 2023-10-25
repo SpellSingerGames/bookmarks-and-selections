@@ -178,7 +178,7 @@ namespace SpellSinger.BookmarksAndSelections
             state!.scrollPos = new Vector2(state.scrollPos.x, contentRect.height - visibleRect.height);
         }
 
-        [MenuItem("Tools/Bookmarks")]
+        [MenuItem("Window/SpellSinger/Bookmarks")]
         private static void ShowWindow()
         {
             var window = GetWindow<BookmarksWindow>();
