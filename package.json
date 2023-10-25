@@ -1,0 +1,16 @@
+{
+  "name": "com.spellsinger.bookmarks",
+  "version": "1.0.0",
+  "displayName": "Bookmarks And Selections",
+  "description": "Unity Editor extensions: Bookmarks Window, Recent Selections Window",
+  "unity": "2021.3",
+  "keywords": [
+    "editor",
+    "extensions",
+    "bookmarks"
+  ],
+  "author": {
+    "name": "SpellSinger",
+    "url": "https://t.me/spellsinger_dev"
+  }
+}
