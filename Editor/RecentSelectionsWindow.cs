@@ -242,12 +242,14 @@ namespace SpellSinger.BookmarksAndSelections
         {
             static void OnWillCreateAsset(string assetPath)
             {
-                Instance.OnCreateAsset(assetPath);
+                if (Instance)
+                    Instance.OnCreateAsset(assetPath);
             }
     
             static AssetMoveResult OnWillMoveAsset(string sourcePath, string destinationPath)
             {
-                Instance.OnCreateAsset(destinationPath);
+                if (Instance)
+                    Instance.OnCreateAsset(destinationPath);
                 return AssetMoveResult.DidNotMove;
             }
         }
