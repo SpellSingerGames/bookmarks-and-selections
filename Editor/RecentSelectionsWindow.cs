@@ -30,6 +30,7 @@ namespace SpellSinger.BookmarksAndSelections
     
         private void OnEnable()
         {
+            titleContent = new GUIContent("Recent Selections");
             if (Instance == null)
                 Instance = this;
             Selection.selectionChanged += HandleSelectionChange;

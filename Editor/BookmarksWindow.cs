@@ -17,6 +17,7 @@ namespace SpellSinger.BookmarksAndSelections
 
         private void OnEnable()
         {
+            titleContent = new GUIContent("Bookmarks");
             so = SoStorage.GetStorage<Bookmarks>();
         }
 
