@@ -159,23 +159,55 @@ namespace SpellSinger.BookmarksAndSelections
         {
             var assembly = typeof(EditorWindow).Assembly;
             var windowType = assembly.GetType("UnityEditor.ProjectBrowser");
-            var controllerType = assembly.GetType("UnityEditor.IMGUI.Controls.TreeViewController");
+            if (windowType == null)
+                return;
 
             var projectBrowser = GetWindow(windowType);
-            var treeViewController =
-                windowType.GetField("m_AssetTree", BindingFlags.NonPublic | BindingFlags.Instance)!
-                    .GetValue(projectBrowser);
-            var state = controllerType.GetProperty("state", BindingFlags.Public | BindingFlags.Instance)!
-                .GetValue(treeViewController) as TreeViewState;
+            var treeViewController = windowType.GetField("m_AssetTree", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.GetValue(projectBrowser);
+            if (treeViewController == null)
+                return;
 
-            var contentRect = (Rect)controllerType.GetField("m_ContentRect",
-                    BindingFlags.NonPublic | BindingFlags.Instance)!
-                .GetValue(treeViewController);
-            var visibleRect = (Rect)controllerType.GetField("m_VisibleRect",
-                    BindingFlags.NonPublic | BindingFlags.Instance)!
-                .GetValue(treeViewController);
+            var state = GetTreeViewState(treeViewController);
+            if (state == null)
+                return;
 
-            state!.scrollPos = new Vector2(state.scrollPos.x, contentRect.height - visibleRect.height);
+            var contentRectField = GetFieldInHierarchy(treeViewController.GetType(), "m_ContentRect");
+            var visibleRectField = GetFieldInHierarchy(treeViewController.GetType(), "m_VisibleRect");
+            if (contentRectField == null || visibleRectField == null)
+                return;
+
+            var contentRect = (Rect)contentRectField.GetValue(treeViewController);
+            var visibleRect = (Rect)visibleRectField.GetValue(treeViewController);
+
+            state.scrollPos = new Vector2(state.scrollPos.x, contentRect.height - visibleRect.height);
+        }
+
+        private static TreeViewState GetTreeViewState(object treeViewController)
+        {
+            var properties = treeViewController.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var property in properties)
+            {
+                if (property.Name == "state" && typeof(TreeViewState).IsAssignableFrom(property.PropertyType))
+                    return property.GetValue(treeViewController) as TreeViewState;
+            }
+
+            return null;
+        }
+
+        private static FieldInfo GetFieldInHierarchy(System.Type type, string name)
+        {
+            while (type != null)
+            {
+                var field = type.GetField(name,
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                if (field != null)
+                    return field;
+
+                type = type.BaseType;
+            }
+
+            return null;
         }
 
         [MenuItem("Window/SpellSinger/Bookmarks")]
